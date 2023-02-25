@@ -1,0 +1,6 @@
+adafruit-circuitpython-framebuf
+adafruit-circuitpython-rfm9x
+adafruit-circuitpython-ssd1306
+asyncio-mqtt
+asyncio-throttle
+paho-mqtt

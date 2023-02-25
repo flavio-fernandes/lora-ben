@@ -1,0 +1,11 @@
+[Unit]
+Description=MQTT gateway to lora-ben
+
+[Service]
+User=pi
+Type=simple
+ExecStart=/home/pi/lora-ben/rpi/bin/start_loraben.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
