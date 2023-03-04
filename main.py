@@ -5,7 +5,7 @@ import analogio
 import digitalio
 import random
 
-from const import deep_sleep_interval
+from const import deep_sleep_interval, send_packets
 from lora import send_report
 from sonar import read_sonar
 from temperature import read_temperature
@@ -14,18 +14,15 @@ from temperature import read_temperature
 def done(bump_sequenace, msg):
     global sequence, relay, blue_led, yellow_led
 
-    relay.value = False
-    blue_led.value = False
-    yellow_led.value = False
+    blue_led.value, yellow_led.value, relay.value = False, False, False
 
     time_alarm = alarm.time.TimeAlarm(
         monotonic_time=time.monotonic() + deep_sleep_interval
     )
-    relay.value = False
 
     if bump_sequenace:
         try:
-            alarm.sleep_memory[0] = (sequence + 1) % 256
+            alarm.sleep_memory[0] = (sequence + send_packets) % 256
         except (NotImplementedError, IndexError):
             # https://github.com/adafruit/circuitpython/issues/5081
             pass
@@ -36,16 +33,15 @@ def done(bump_sequenace, msg):
 
 # Initialize message id with random in case sleep_memory is
 # not available.
-sequence = random.randint(0, 255)
+sequence = random.randint(0, 255 - send_packets)
 try:
     if alarm.wake_alarm:
         sequence = alarm.sleep_memory[0]
+    else:
+        time.sleep(3)
 except (NotImplementedError, IndexError):
     # https://github.com/adafruit/circuitpython/issues/5081
     pass
-
-# give microcontroller a few seconds to quiesce after boot
-time.sleep(3)
 
 # The replay controls power to all the gizmos attached.
 # Because of that, we must "power it up" before trying to use them!
@@ -54,7 +50,7 @@ relay.direction = digitalio.Direction.OUTPUT
 relay.value = True
 
 # give woken up sensors a few seconds to quiesce
-time.sleep(5)
+time.sleep(2)
 
 blue_led = digitalio.DigitalInOut(board.D5)
 blue_led.direction = digitalio.Direction.OUTPUT
@@ -89,8 +85,13 @@ else:
     blue_led.value, yellow_led.value = False, True
     time.sleep(1)
 
-relay.value = False
-if not send_report(sequence, battery_value, temperature, distance):
+send_fails = 0
+for i in range(send_packets):
+    if not send_report(sequence + i, battery_value, temperature, distance):
+        send_fails += 1
+    time.sleep(1)
+
+if send_fails:
     done(False, "failed to send report")
 
 # STATE 4: SENT RADIO REPORT

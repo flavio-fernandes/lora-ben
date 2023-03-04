@@ -2,11 +2,12 @@ import time
 import board
 import busio
 
-uart = busio.UART(tx=None, rx=board.D13, baudrate=9600)
+uart = busio.UART(tx=None, rx=board.A3, baudrate=9600)
 
 # Read multiple ultrasonic values and average them out for better
 # precision
-SONAR_SAMPLES = 7
+WARM_UP_SAMPLES = 7
+SONAR_SAMPLES = 15
 
 
 def _read_me007ys(timeout=1.0):
@@ -38,21 +39,26 @@ def _read_me007ys(timeout=1.0):
             idx = 0
 
 
-def read_sonar(timeout=3.0):
-    values = []
-    ts = time.monotonic()
-    while len(values) < SONAR_SAMPLES:
-        if time.monotonic() - ts > timeout:
-            return
-        value = _read_me007ys()
-        if value is None:
-            time.sleep(0.05)
-            continue
-        values.append(value)
-    values.sort()
-    count, result = 0, 0
-    # Ignore the 2 extremes
-    for value in values[1 : len(values) - 1]:
-        count += 1
-        result += value
-    return result // count
+def read_sonar(timeout=10.0):
+    while True:
+        values = []
+        ts = time.monotonic()
+        while len(values) < WARM_UP_SAMPLES + SONAR_SAMPLES:
+            if (timeout is not None) and (time.monotonic() - ts > timeout):
+                return
+            value = _read_me007ys()
+            if value is None:
+                time.sleep(0.05)
+                continue
+            values.append(value)
+        values.sort()
+        count, result = 0, 0
+        # Ignore the inital readings
+        for value in values[WARM_UP_SAMPLES : len(values) - 1]:
+            count += 1
+            result += value
+            # print("  sample ", value)
+        if timeout is None:
+            print("distance:", result // count)
+        else:
+            return result // count
