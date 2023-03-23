@@ -32,6 +32,14 @@ You can see more [pictures of this project here :art:](https://flic.kr/s/aHBqjAt
 
 **NOTE:** The enclosure for this project is still in progress!
 
+#### Adafruit Show and Tell
+
+Adafruit offers guides along with products that make it easy to build this project.
+JP and Erin hosted [Show and Tell](https://www.youtube.com/c/adafruit/videos) on March 22nd, 2023 and
+I had the honor of [talking about what I did so far](https://www.youtube.com/watch?v=m7rZJALOhrc&t=999s) to them.
+
+[![lora-ben talk](https://img.youtube.com/vi/m7rZJALOhrc/2.jpg)](https://www.youtube.com/watch?v=m7rZJALOhrc&t=999s)
+    
 # Installation
 
 ## Sensor (sender) Side
