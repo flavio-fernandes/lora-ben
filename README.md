@@ -190,3 +190,6 @@ $ mosquitto_sub -F '@Y-@m-@dT@H:@M:@S@z : %q : %t : %p' -h mqtt  -t "loraben/#"
 
 ```
 
+## Open MQTT Gateway
+
+[See here](open-mqtt-gateway.md) for info on using an ESP32 with Lora hardware to easily bridge Lora messages into MQTT.
