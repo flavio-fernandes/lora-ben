@@ -30,7 +30,11 @@ Components on the **Receiver** side:
 
 You can see more [pictures of this project here :art:](https://flic.kr/s/aHBqjAtpNE).
 
-**NOTE:** The enclosure for this project is still in progress!
+## 3d print STL files
+
+![lora-ben-enclosure](https://live.staticflickr.com/65535/52854367238_05a994b19d_3k.jpg)
+
+[See here](3d-print.md) for info on [.STL files](https://github.com/flavio-fernandes/lora-ben/tree/main/stl) used to print the enclosure, as well as the additional parts.
 
 #### Adafruit Show and Tell
 
